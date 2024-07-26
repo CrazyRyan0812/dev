@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <meta name="robots" content="index, follow">
+  <!-- title -->
+  
+    
+  <title>在Windows上用VS Code搭配cmake + GCC + mingw開發多檔案C++專案 - CrazyRyan&#39;s Development Note</title>
+    
+  
+  
+  <!-- open graph -->
+  <meta name="description" content="ok好來記錄一下標題打得這麼一長串的東東要怎麼讓它執行起來，相信會google或找到或存到這篇的你應該是會有這個機掰的需求，畢竟這東西當初搞了我整整兩個禮拜，不同電腦狀況又都不一樣QAQ 但撰寫這篇文章時，有重開一個windows sandbox的環境進行全新安裝測試，所以應該會是90%成功的方式了吧！ 我的作法有點倒果為因，可能不是正統做法，但我也只是要讓他可以跑起來而已QAQ 專案的CMake">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Windows上用VS Code搭配cmake + GCC + mingw開發多檔案C++專案">
+<meta property="og:url" content="https://dev.crazyryan.xyz/2022/09/27/windows-cmake/index.html">
+<meta property="og:site_name" content="CrazyRyan&#39;s Development Note">
+<meta property="og:description" content="ok好來記錄一下標題打得這麼一長串的東東要怎麼讓它執行起來，相信會google或找到或存到這篇的你應該是會有這個機掰的需求，畢竟這東西當初搞了我整整兩個禮拜，不同電腦狀況又都不一樣QAQ 但撰寫這篇文章時，有重開一個windows sandbox的環境進行全新安裝測試，所以應該會是90%成功的方式了吧！ 我的作法有點倒果為因，可能不是正統做法，但我也只是要讓他可以跑起來而已QAQ 專案的CMake">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://i.imgur.com/hLa6CCQ.png">
+<meta property="og:image" content="https://i.imgur.com/KwEdH9B.png">
+<meta property="og:image" content="https://i.imgur.com/Z9uwVKi.png">
+<meta property="og:image" content="https://i.imgur.com/CDOStTJ.png">
+<meta property="og:image" content="https://i.imgur.com/tEiDuBQ.png">
+<meta property="og:image" content="https://i.imgur.com/QGo2UsV.png">
+<meta property="og:image" content="https://i.imgur.com/eLag2fv.png">
+<meta property="og:image" content="https://i.imgur.com/PPDKQbf.png">
+<meta property="og:image" content="https://i.imgur.com/gKrlbTW.png">
+<meta property="og:image" content="https://i.imgur.com/pe06CAW.png">
+<meta property="og:image" content="https://i.imgur.com/VKRaE72.png">
+<meta property="article:published_time" content="2022-09-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-07-26T20:45:18.000Z">
+<meta property="article:author" content="CrazyRyan(員外)">
+<meta property="article:tag" content="CILAB">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="Cmake">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.imgur.com/hLa6CCQ.png">
+  <!-- canonical -->
+  
+  <link rel="canonical" href="https://dev.crazyryan.xyz/2022/09/27/windows-cmake/">
+  
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="/img/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+  <!-- CSS -->
+  
+<link rel="stylesheet" href="/css/reset.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/markdown.css">
+
+  
+<link rel="stylesheet" href="/css/fonts.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">CrazyRyan&#39;s Development Note</a>
+    <!-- <div class="logo"><a href="/" title="Len"><img src="/img/logo.svg" alt="Len" aria-label="logo" height="20"></a></div> -->
+        <ul class="nav">
+            
+            <li><a href="/">Home</a></li>
+            
+            <li><a href="/about">About</a></li>
+            
+            <li><a href="/archives">Archives</a></li>
+            
+        </ul>
+
+
+    </a>
+</div>
+
+                
+                <div class="post-main">
+    
+        <div class="post-main-title">
+            在Windows上用VS Code搭配cmake + GCC + mingw開發多檔案C++專案
+        </div>
+        <div class="post-meta">
+            2022-09-27 ｜ 
+            
+                <a href="/categories/%E9%96%8B%E7%99%BC%E7%9B%B8%E9%97%9C/"># 開發相關</a>
+            
+        </div>
+        <!-- 圆角分类 -->
+        <!-- <div class="tags"> -->
+            <!--  -->
+                <!-- <a href="/categories/%E9%96%8B%E7%99%BC%E7%9B%B8%E9%97%9C/">開發相關</a> -->
+            <!--  -->
+        <!-- </div> -->
+        <div class="post-md">
+            <p>ok好來記錄一下標題打得這麼一長串的東東要怎麼讓它執行起來，相信會google或找到或存到這篇的你應該是會有這個機掰的需求，畢竟這東西當初搞了我整整兩個禮拜，不同電腦狀況又都不一樣QAQ</p>
+<p>但撰寫這篇文章時，有重開一個windows sandbox的環境進行全新安裝測試，所以應該會是90%成功的方式了吧！</p>
+<p>我的作法有點倒果為因，可能不是正統做法，但我也只是要讓他可以跑起來而已QAQ</p>
+<p>專案的CMakeLists.txt為下圖結構<br><img src="https://i.imgur.com/hLa6CCQ.png"></p>
+<h2 id="事前準備："><a href="#事前準備：" class="headerlink" title="事前準備："></a>事前準備：</h2><p><a target="_blank" rel="noopener" href="https://code.visualstudio.com/#alt-downloads">VS code <strong>System Installer</strong> (安裝過程會提醒你要裝對)</a><br><a target="_blank" rel="noopener" href="https://sourceforge.net/projects/winlibs-mingw/files/">正確版本的GCC+mingw</a><br>(codeblocks用的是GCC8.1.0，筆者自己用9.2.0，學長用10.3.0，撰稿當下最新版為12.2.0)<br>(其他參數的判斷請洽下文)<br><a target="_blank" rel="noopener" href="https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/">mingw-get-setup</a><br><a target="_blank" rel="noopener" href="https://cmake.org/download/">CMake GUI</a>，非必要，因為功能有包在VS extension，但還是可以裝！</p>
+<div class="message-box success">
+筆者自己有留一份 <br/>
+VS code 1.71.2 + GCC 9.2.0 + mingw <br/>
+的安裝檔備份，假使哪天這些連結有失效的話，文章最底有相關聯絡資訊
+</div>
+
+<h2 id="安裝步驟-抓穩囉！"><a href="#安裝步驟-抓穩囉！" class="headerlink" title="安裝步驟 抓穩囉！"></a>安裝步驟 抓穩囉！</h2><h3 id="1-先解壓縮指定的GCC-mingw版本到你想要的地址-本文指定在C-mingw64"><a href="#1-先解壓縮指定的GCC-mingw版本到你想要的地址-本文指定在C-mingw64" class="headerlink" title="1. 先解壓縮指定的GCC+mingw版本到你想要的地址(本文指定在C:\mingw64)"></a>1. 先解壓縮指定的GCC+mingw版本到你想要的地址(本文指定在C:\mingw64)</h3><p>線上安裝檔(mingw-w64-install)理論上不能用(所以我的事前準備也沒有他)，而且停在舊版，所以要自己手動下載需要用到的7z<br><img src="https://i.imgur.com/KwEdH9B.png"><br>這裡要選你要的版本，而筆者的版本在最底部XD<br><img src="https://i.imgur.com/Z9uwVKi.png"><br>因為9.2.0太乾淨惹(?)所以截了很長的代碼，並提供如下解釋</p>
+<div class="message-box success">
+i686代表為32bit only(無法compile出64bit exe)，<strong>x86_64</strong>為32+64bit都有 <br/>
+<strong>posix</strong> vs win32，大致上為多執行續的編譯方式，win32不支援多執行續，所以基本上會裝posix <br/>
+<strong>seh</strong> vs sjlj vs dwarf <br/>
+在處理exceptions時會用不同的方法return，有點複雜我不是很清楚架構，不過最基礎的是seh，所以我也選用這個版本
+</div>
+
+<h3 id="2-將剛剛那個地址及內部的bin加入到PATH"><a href="#2-將剛剛那個地址及內部的bin加入到PATH" class="headerlink" title="2. 將剛剛那個地址及內部的bin加入到PATH"></a>2. 將剛剛那個地址及內部的bin加入到PATH</h3><p><img src="https://i.imgur.com/CDOStTJ.png"></p>
+<div class="message-box success">
+打開PATH的方法，左下角開始按右鍵>系統>找到最右邊的進階系統設定>環境變數>path按編輯>key入地址
+</div>
+
+<h3 id="3-安裝VS-CODE，並安裝以下3個extensions，安裝完成後關閉VS-code"><a href="#3-安裝VS-CODE，並安裝以下3個extensions，安裝完成後關閉VS-code" class="headerlink" title="3. 安裝VS CODE，並安裝以下3個extensions，安裝完成後關閉VS code"></a>3. 安裝VS CODE，並安裝以下3個extensions，安裝完成後關閉VS code</h3><p>C&#x2F;C++, cmake, cmake tools<br>(此步驟截圖略，應該是也不需要啦XD)</p>
+<h3 id="4-安裝mingw-get-setup，請以系統管理員身分執行，並指定安裝地址在剛剛的GCC-mingw的解壓縮地址"><a href="#4-安裝mingw-get-setup，請以系統管理員身分執行，並指定安裝地址在剛剛的GCC-mingw的解壓縮地址" class="headerlink" title="4. 安裝mingw-get-setup，請以系統管理員身分執行，並指定安裝地址在剛剛的GCC+mingw的解壓縮地址"></a>4. 安裝mingw-get-setup，請以系統管理員身分執行，並指定安裝地址在剛剛的GCC+mingw的解壓縮地址</h3><p><img src="https://i.imgur.com/tEiDuBQ.png"><br>請再次確認地址有跟GCC+mingw的解壓縮地址相同</p>
+<h3 id="5-打開MinGW-Installation-Manager，在all-packages裡面找到mingw32-make-bin，安裝他！"><a href="#5-打開MinGW-Installation-Manager，在all-packages裡面找到mingw32-make-bin，安裝他！" class="headerlink" title="5. 打開MinGW Installation Manager，在all packages裡面找到mingw32-make-bin，安裝他！"></a>5. 打開MinGW Installation Manager，在all packages裡面找到mingw32-make-bin，安裝他！</h3><p><img src="https://i.imgur.com/QGo2UsV.png"><br>左邊點選All Packages，右邊開始拉找到mingw32-make-bin<br><img src="https://i.imgur.com/eLag2fv.png"><br>在回到左上角的installation，選apply changes</p>
+<h3 id="6-回到VS-code，按下ctrl-shift-P-選擇-C-C-Edit-Configurations-UI"><a href="#6-回到VS-code，按下ctrl-shift-P-選擇-C-C-Edit-Configurations-UI" class="headerlink" title="6. 回到VS code，按下ctrl+shift+P 選擇 C&#x2F;C++:Edit Configurations(UI)"></a>6. 回到VS code，按下ctrl+shift+P 選擇 C&#x2F;C++:Edit Configurations(UI)</h3><p><img src="https://i.imgur.com/PPDKQbf.png"></p>
+<p><img src="https://i.imgur.com/gKrlbTW.png"><br>這裡請確認有選定到正確的compiler path</p>
+<h3 id="7-打開專案檔，點左下角Cmake-tools的kit選擇compiler位置，理應自己抓到惹，沒有的話要把第5步解除安裝make-bin後重新安裝！"><a href="#7-打開專案檔，點左下角Cmake-tools的kit選擇compiler位置，理應自己抓到惹，沒有的話要把第5步解除安裝make-bin後重新安裝！" class="headerlink" title="7. 打開專案檔，點左下角Cmake tools的kit選擇compiler位置，理應自己抓到惹，沒有的話要把第5步解除安裝make-bin後重新安裝！"></a>7. 打開專案檔，點左下角Cmake tools的kit選擇compiler位置，理應自己抓到惹，沒有的話要把第5步解除安裝make-bin後重新安裝！</h3><p><img src="https://i.imgur.com/pe06CAW.png"></p>
+<h3 id="8-按run，大功告成，有夠感動痛哭流涕QAQ"><a href="#8-按run，大功告成，有夠感動痛哭流涕QAQ" class="headerlink" title="8. 按run，大功告成，有夠感動痛哭流涕QAQ"></a>8. 按run，大功告成，有夠感動痛哭流涕QAQ</h3><p><img src="https://i.imgur.com/VKRaE72.png"><br>開心灑花，可以到debug console去確認程式的執行狀況囉！</p>
+<div class="message-box warning">
+如果有人知道怎麼設定這種情況下的breakpoint，霸脫教我QAQ
+</div>
+        </div>
+    
+<!-- tags -->
+
+    <div class="post-meta">
+        標籤：
+        
+            <a href="/tags/CILAB/"> / CILAB</a>
+        
+            <a href="/tags/C/"> / C++</a>
+        
+            <a href="/tags/Cmake/"> / Cmake</a>
+        
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © <script>document.write(new Date().getFullYear())</script> CrazyRyan&#39;s Development Note</span>
+    <span>Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> with <a target="_blank" rel="noopener" href="https:///imzl.com/zenmind">ZenMind</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+
+
+<script src="/js/highlight.min.js"></script>
+
+
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+    </body>
+</html>
