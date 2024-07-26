@@ -91,15 +91,35 @@
         <!-- </div> -->
         <div class="post-md">
             <h2 id="No-module-named-‘apt-pkg’"><a href="#No-module-named-‘apt-pkg’" class="headerlink" title="No module named ‘apt_pkg’"></a>No module named ‘apt_pkg’</h2><p><img src="https://i.imgur.com/4DZgITn.png"><br>解法</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/lib/python3/dist-packages</span><br><span class="line">ls</span><br></pre></td></tr></table></figure>
+<pre><code class="sh"> cd /usr/lib/python3/dist-packages
+ ls
+</code></pre>
 <p>找到裡面的apt_pkg.cpython-<strong>35</strong>m-x86_64-linux-gnu.so<br>看他的版本是啥</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ln -s apt_pkg.cpython-35m-x86_64-linux-gnu.so apt_pkg.so</span><br></pre></td></tr></table></figure>
+<pre><code class="sh">sudo ln -s apt_pkg.cpython-35m-x86_64-linux-gnu.so apt_pkg.so
+</code></pre>
 <p>之後就應該可以正常執行惹</p>
 <h2 id="Ubuntu-16-04-安裝-gcc-10-3"><a href="#Ubuntu-16-04-安裝-gcc-10-3" class="headerlink" title="Ubuntu 16.04 安裝 gcc 10.3"></a>Ubuntu 16.04 安裝 gcc 10.3</h2><p>我用這個失敗：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:ubuntu-toolchain-r/test</span><br><span class="line">sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt install gcc-10 g++-10 </span><br><span class="line">sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 60 --slave /usr/bin/g++ g++ /usr/bin/g++-10</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
+<pre><code class="sh">sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa
+sudo apt update
+sudo apt install gcc-10 g++-10 
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 60 --slave /usr/bin/g++ g++ /usr/bin/g++-10
+</code></pre>
 <p>我用這個方法成功，參考<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41054313/article/details/119453611">這篇文章</a>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">wget http://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz</span><br><span class="line">tar -zxvf gcc-10.3.0.tar.gz</span><br><span class="line"></span><br><span class="line">cd gcc-10.3.0</span><br><span class="line">./contrib/download_prerequisites</span><br><span class="line"></span><br><span class="line">mkdir build</span><br><span class="line">cd build/</span><br><span class="line">../configure -enable-checking=release -enable-languages=c,c++ -disable-multilib</span><br><span class="line"></span><br><span class="line">make -j 20 #後面請選電腦核心數</span><br><span class="line"></span><br><span class="line">sudo make install</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="sh">wget http://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz
+tar -zxvf gcc-10.3.0.tar.gz
+
+cd gcc-10.3.0
+./contrib/download_prerequisites
+
+mkdir build
+cd build/
+../configure -enable-checking=release -enable-languages=c,c++ -disable-multilib
+
+make -j 20 #後面請選電腦核心數
+
+sudo make install
+</code></pre>
 <p>未嘗試過 可能是最複雜的方法<br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/910ec538e832">https://www.jianshu.com/p/910ec538e832</a></p>
 
         </div>
