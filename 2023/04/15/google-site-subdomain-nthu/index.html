@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+    <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <meta name="robots" content="index, follow">
+  <!-- title -->
+  
+    
+  <title>Google Site 與學校子子網域的DNS連接 (清大) - CrazyRyan&#39;s Development Note</title>
+    
+  
+  
+  <!-- open graph -->
+  <meta name="description" content="在多重子網域的情況下，如何於DNS端正確設定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google Site 與學校子子網域的DNS連接 (清大)">
+<meta property="og:url" content="https://dev.crazyryan.xyz/2023/04/15/google-site-subdomain-nthu/index.html">
+<meta property="og:site_name" content="CrazyRyan&#39;s Development Note">
+<meta property="og:description" content="在多重子網域的情況下，如何於DNS端正確設定">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://i.imgur.com/Gk1Am9k.png">
+<meta property="og:image" content="https://i.imgur.com/3iPATbK.png">
+<meta property="og:image" content="https://i.imgur.com/gTiZCjs.png">
+<meta property="og:image" content="https://i.imgur.com/canIBfD.png">
+<meta property="og:image" content="https://i.imgur.com/ZvUr60O.png">
+<meta property="article:published_time" content="2023-04-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-07-26T20:52:18.000Z">
+<meta property="article:author" content="CrazyRyan(員外)">
+<meta property="article:tag" content="CILAB">
+<meta property="article:tag" content="NTHU">
+<meta property="article:tag" content="Subdomain">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.imgur.com/Gk1Am9k.png">
+  <!-- canonical -->
+  
+  <link rel="canonical" href="https://dev.crazyryan.xyz/2023/04/15/google-site-subdomain-nthu/">
+  
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="/img/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+  <!-- CSS -->
+  
+<link rel="stylesheet" href="/css/reset.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/markdown.css">
+
+  
+<link rel="stylesheet" href="/css/fonts.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">CrazyRyan&#39;s Development Note</a>
+    <!-- <div class="logo"><a href="/" title="Len"><img src="/img/logo.svg" alt="Len" aria-label="logo" height="20"></a></div> -->
+        <ul class="nav">
+            
+            <li><a href="/">Home</a></li>
+            
+            <li><a href="/about">About</a></li>
+            
+            <li><a href="/archives">Archives</a></li>
+            
+        </ul>
+
+
+    </a>
+</div>
+
+                
+                <div class="post-main">
+    
+        <div class="post-main-title">
+            Google Site 與學校子子網域的DNS連接 (清大)
+        </div>
+        <div class="post-meta">
+            2023-04-15 ｜ 
+            
+                <a href="/categories/%E9%96%8B%E7%99%BC%E7%9B%B8%E9%97%9C/"># 開發相關</a>
+            
+                <a href="/categories/%E9%96%8B%E7%99%BC%E7%9B%B8%E9%97%9C/%E6%9E%B6%E7%AB%99%E7%9B%B8%E9%97%9C/"># 架站相關</a>
+            
+        </div>
+        <!-- 圆角分类 -->
+        <!-- <div class="tags"> -->
+            <!--  -->
+                <!-- <a href="/categories/%E9%96%8B%E7%99%BC%E7%9B%B8%E9%97%9C/">開發相關</a> -->
+            <!--  -->
+                <!-- <a href="/categories/%E9%96%8B%E7%99%BC%E7%9B%B8%E9%97%9C/%E6%9E%B6%E7%AB%99%E7%9B%B8%E9%97%9C/">架站相關</a> -->
+            <!--  -->
+        <!-- </div> -->
+        <div class="post-md">
+            <p>會寫這篇文章是因為近期在協助架設一次性活動子網域網站，因為耍懶想說用Google site來架設就好，但在子網域對應的時候遇到蠻大的問題(這跟各校的DNS設定有所關係)</p>
+<p>要架設的網站為 aiforum2023.cs.nthu.edu.tw</p>
+<p>要連接過去主要會有兩個關鍵步驟，那其實也只有那其實也只有那其實也只有</p>
+<ol>
+<li>Google Domain Console驗證</li>
+<li>Google Site新增網域</li>
+</ol>
+<div class="message-box success">
+如果是一般的主網域對應的話，[參考這篇](https://www.crazyryan.xyz/about)就好囉，而且TXT可以用！
+</div>
+
+<h2 id="1-Google-Domain-Console驗證"><a href="#1-Google-Domain-Console驗證" class="headerlink" title="1. Google Domain Console驗證"></a>1. Google Domain Console驗證</h2><p>直接講結論，<strong>務必使用CNAME驗證</strong>，子網域驗證不能使用TXT，因為會發生相同hostname的衝突。</p>
+<p>在這個步驟，會是google主動去對DNS server進行索取驗證，所以成功與否幾乎是立刻就會知道，3分鐘內一定會有結果。</p>
+<p>超過的話，基本上有可能是學校端的DNS有存檔了但是沒有deploy出去，務必要在跟相關負責人多加確認，不要直接傻傻地等48小時</p>
+<p>首先先確認解析的DNS是哪個層級，以本案例為例是 cs.nthu.edu.tw，而非 nthu.edu.tw</p>
+<p>所以在驗證步驟，google給了我這個</p>
+<p><img src="https://i.imgur.com/Gk1Am9k.png"></p>
+<p>但是實際上，我要填在DNS紀錄的，是這個：(半形的.是必要的存在，請知悉)</p>
+<p><img src="https://i.imgur.com/3iPATbK.png"></p>
+<p>在學校端的DNS紀錄更新存檔並deploay出去後，幾分鐘內就應該會有結果惹~</p>
+<h2 id="2-Google-Site新增網域"><a href="#2-Google-Site新增網域" class="headerlink" title="2. Google Site新增網域"></a>2. Google Site新增網域</h2><p>這邊會希望讓</p>
+<p>aiforum2023.cs.nthu.edu.tw<br><a target="_blank" rel="noopener" href="http://www.aiforum2023.cs.nthu.edu.tw/">www.aiforum2023.cs.nthu.edu.tw</a></p>
+<p>這2種網址輸入方法，都可以連到正確的網站，因此在DNS的設定，必須如下設定(TTL建議用預設的1小時就好，原先以為可以加速測試但其實沒有XD)</p>
+<p><img src="https://i.imgur.com/gTiZCjs.png"></p>
+<p>並且在網頁端採取以下設定</p>
+<p><img src="https://i.imgur.com/canIBfD.png"></p>
+<p>一切就完工囉！</p>
+<p>但因為這步要等正常的DNS廣播程序，我等了約4個小時才完全成功。</p>
+<p>其中中間有可能會出現DNS無效，最簡單的方式是，在學校的網路架構下(因為通常就是學校自己的DNS)，直接去ping這個網站，理論上會回應</p>
+<p><img src="https://i.imgur.com/ZvUr60O.png"></p>
+<p>如果這步有成功的話，基本上就只是等待的問題囉，大家都無能為力XD</p>
+
+        </div>
+    
+<!-- tags -->
+
+    <div class="post-meta">
+        標籤：
+        
+            <a href="/tags/CILAB/"> / CILAB</a>
+        
+            <a href="/tags/NTHU/"> / NTHU</a>
+        
+            <a href="/tags/Subdomain/"> / Subdomain</a>
+        
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © <script>document.write(new Date().getFullYear())</script> CrazyRyan&#39;s Development Note</span>
+    <span>Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> with <a target="_blank" rel="noopener" href="https:///imzl.com/zenmind">ZenMind</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+
+
+<script src="/js/highlight.min.js"></script>
+
+
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+    </body>
+</html>
