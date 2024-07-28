@@ -65,6 +65,10 @@ picture
     }
 }
 
+.hidden-image {
+    display: none;
+}
+
 input,
 button,
 textarea,
