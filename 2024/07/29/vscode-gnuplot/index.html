@@ -7,20 +7,31 @@
   <!-- title -->
   
     
-  <title>vscode-gnuplot - CrazyRyan&#39;s Development Note</title>
+  <title>文明的用VS code來操作Gnuplot畫圖及簡易教學 - CrazyRyan&#39;s Development Note</title>
     
   
   
   <!-- open graph -->
-  <meta property="og:type" content="article">
-<meta property="og:title" content="vscode-gnuplot">
+  <meta name="description" content="Gnuplot真的很難用又醜，但畫論文長痛不如短痛！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文明的用VS code來操作Gnuplot畫圖及簡易教學">
 <meta property="og:url" content="https://dev.crazyryan.xyz/2024/07/29/vscode-gnuplot/index.html">
 <meta property="og:site_name" content="CrazyRyan&#39;s Development Note">
+<meta property="og:description" content="Gnuplot真的很難用又醜，但畫論文長痛不如短痛！">
 <meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://dev.crazyryan.xyz/2024/07/29/vscode-gnuplot/01.png">
+<meta property="og:image" content="https://dev.crazyryan.xyz/2024/07/29/vscode-gnuplot/02.png">
+<meta property="og:image" content="https://dev.crazyryan.xyz/2024/07/29/vscode-gnuplot/03.png">
+<meta property="og:image" content="https://dev.crazyryan.xyz/2024/07/29/vscode-gnuplot/04.png">
+<meta property="og:image" content="https://dev.crazyryan.xyz/2024/07/29/vscode-gnuplot/05.png">
+<meta property="og:image" content="https://dev.crazyryan.xyz/2024/07/29/vscode-gnuplot/06.png">
 <meta property="article:published_time" content="2024-07-28T17:09:26.000Z">
 <meta property="article:modified_time" content="2024-07-28T17:09:26.000Z">
 <meta property="article:author" content="CrazyRyan(員外)">
+<meta property="article:tag" content="CILAB">
+<meta property="article:tag" content="論文">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dev.crazyryan.xyz/2024/07/29/vscode-gnuplot/01.png">
   <!-- canonical -->
   
   <link rel="canonical" href="https://dev.crazyryan.xyz/2024/07/29/vscode-gnuplot/">
@@ -69,21 +80,139 @@
                 <div class="post-main">
     
         <div class="post-main-title">
-            vscode-gnuplot
+            文明的用VS code來操作Gnuplot畫圖及簡易教學
         </div>
         <div class="post-meta">
             2024-07-29 ｜ 
+            
+                <a href="/categories/%E8%AB%96%E6%96%87%E7%9B%B8%E9%97%9C/"># 論文相關</a>
             
         </div>
         <!-- 圓角分類 -->
         <!-- <div class="tags"> -->
             <!--  -->
+                <!-- <a href="/categories/%E8%AB%96%E6%96%87%E7%9B%B8%E9%97%9C/">論文相關</a> -->
+            <!--  -->
         <!-- </div> -->
         <div class="post-md">
-            
+            <p>有鑑於我們家老師真的對於gnuplot有特愛的偏好，而筆者也真的在上傳論文到IEEE系統時發生了字體被拒的問題(原先使用matplotlib的預設字體)<br>(更弔詭的是只有wiki系統有出現，CAI系統沒有OAO)<br>因此痛定思痛決定要找出可以比較聰明的使用gnuplot的方式</p>
+<p>本文所提供的方法，只要在csv正確的情況下，可以即時預覽並用註解方式輸出eps png檔，已經算是很文明的做法了啦真的！</p>
+<p>在使用本文所提到的 VS code + gnuplot 的方式，必須要先將要畫圖的資料弄成csv，算是少數可以在優化的地方，交給其他人來做了！</p>
+<h3 id="首先，先安裝Gnuplot"><a href="#首先，先安裝Gnuplot" class="headerlink" title="首先，先安裝Gnuplot"></a>首先，先安裝Gnuplot</h3><p><a target="_blank" rel="noopener" href="https://sourceforge.net/projects/gnuplot/files/gnuplot/">這是官網引導連結</a></p>
+<p>沒意外的話可以直接選最新版，沒有強制規定</p>
+<p>安裝過程中要注意這幾個地方</p>
+<ul>
+<li>請勾選為所有使用者安裝</li>
+<li>一定要加入PATH，如果過程中忘記了，可以用以下方式重新添加</li>
+</ul>
+<p><img src="/2024/07/29/vscode-gnuplot/01.png"></p>
+<p>左下角開始右鍵-&gt;系統-&gt;右上角的進階系統設定-&gt;環境變數-&gt;<br>找到下面的系統變數的Path之後，按編輯-&gt;點選新增以下地址<br><code>C:\Program Files\gnuplot\bin</code></p>
+<p><img src="/2024/07/29/vscode-gnuplot/02.png"></p>
+<p>這樣就成功囉</p>
+<h3 id="再來，進入VS-code-extension搜尋：Gnuplot-preview"><a href="#再來，進入VS-code-extension搜尋：Gnuplot-preview" class="headerlink" title="再來，進入VS code extension搜尋：Gnuplot preview"></a>再來，進入VS code extension搜尋：Gnuplot preview</h3><p>不要安裝錯了XD 我個人覺得這個最好用</p>
+<p><img src="/2024/07/29/vscode-gnuplot/03.png"></p>
+<p>(可略)安裝完成後，在按他的齒輪，可以去設定他的反應時間</p>
+<p><img src="/2024/07/29/vscode-gnuplot/04.png"></p>
+<p>就安裝完成囉</p>
+<h3 id="簡易Gnuplot教學"><a href="#簡易Gnuplot教學" class="headerlink" title="簡易Gnuplot教學"></a>簡易Gnuplot教學</h3><p>基本上存Gnuplot的部分，副檔名可以是 .gp&#x2F;.dem 之類的，但他們基本上本質都只是txt而已</p>
+<p>這裡提供一組 .gp 的內容範例，只要按<code>ctrl+shift+v</code>即可即時預覽，如下圖：</p>
+<p><img src="/2024/07/29/vscode-gnuplot/05.png"></p>
+<p>雖然在即時預覽時比例很怪，但是在輸出eps&#x2F;png的時候會是正常的，以下提供幾個比較難理解的 code 解釋：</p>
+<ul>
+<li>第06-10行是輸出eps的code，解除註解的話，會即時輸出eps出來</li>
+<li>第12-16行是輸出png的code，解除註解的話，會即時輸出png出來</li>
+<li>第18-21行是設定 x y 軸的數值範圍跟刻度範圍，要注意要多加一個小刻度以避免最上面沒輸出到</li>
+<li>第23-26行是一組點+線的設定值，<a target="_blank" rel="noopener" href="https://jerkwin.github.io/2014/04/06/gnuplot%E9%A2%9C%E8%89%B2%E8%AE%BE%E7%BD%AE/">顏色可以參考這篇</a>，<a target="_blank" rel="noopener" href="https://wiki.slank.dev/misc/gnuplot.html">點線形式可以參考這篇</a>，其餘以此類推</li>
+<li>第56-58行是輸出一組完整線的部分，本code的做法是會將一條線分成3條不同的線顯示，其餘以此類推<ul>
+<li>抓第1欄當作x值，抓第2欄當作y值，線的格式，顯示線-格式1，不顯示legend</li>
+<li>抓第1欄當作x值，抓第2欄當作y值，點的格式，每50個數據顯示一個點-格式1，不顯示legend</li>
+<li>抓第1欄當作x值，抓第2欄當作y值，抓第3欄當作dy值，error bar的格式，每50個數據顯示一個bar-格式1，顯示legend</li>
+</ul>
+</li>
+</ul>
+<pre><code class="gp">reset
+
+set encoding utf8
+set datafile separator &#39;,&#39;
+
+# set terminal postscript eps color enhanced font &quot;Helvetica, 30&quot; size 10in, 7.5in
+# set output &#39;01_flower_big_route_avg_four_stdsqrt.eps&#39;
+# set xlabel &quot;Generation&quot; font &quot;Helvetica, 40&quot;
+# set ylabel &quot;Route length&quot; font &quot;Helvetica, 40&quot;
+# set key font &quot;Helvetica, 40&quot;
+
+# set terminal pngcairo enhanced font &#39;Helvetica, 20&#39; size 1000, 750
+# set output &#39;01_flower_big_route_avg_four_stdsqrt.png&#39;
+# set xlabel &quot;Generation&quot; font &quot;Helvetica, 24&quot;
+# set ylabel &quot;Route length&quot; font &quot;Helvetica, 24&quot;
+# set key font &quot;Helvetica, 24&quot;
+
+set xrange [0:1000]
+set xtics 0,200,1000
+set yrange [2400:4000]
+set ytics 2400,200,4000
+
+set style line 1 \
+    linecolor rgb &#39;red&#39; \
+    linetype 1 linewidth 2\
+    pointtype 5 pointsize 0.75
+set style line 2 \
+    linecolor rgb &#39;dark-green&#39; \
+    linetype 1 linewidth 2 \
+    pointtype 7 pointsize 1
+set style line 3 \
+    linecolor rgb &#39;blue&#39; \
+    linetype 1 linewidth 2 \
+    pointtype 9
+set style line 4 \
+    linecolor rgb &#39;magenta&#39; \
+    linetype 1 linewidth 2 \
+    pointtype 11
+set style line 5 \
+    linecolor rgb &#39;cyan&#39; \
+    linetype 1 linewidth 2 \
+    pointtype 13
+set style line 6 \
+    linecolor rgb &#39;dark-yellow&#39; \
+    linetype 1 linewidth 2 \
+    pointtype 15
+set style line 7 \
+    linecolor rgb &#39;purple&#39; \
+    linetype 1 linewidth 2 \
+    pointtype 2
+set style line 8 \
+    linecolor rgb &#39;navy&#39; \
+    linetype 1 linewidth 2 \
+    pointtype 3
+
+plot &quot;01_flower_big_route_avg_stdsqrt.csv&quot; using 1:2 with lines linestyle 1 notitle, \
+     &quot;01_flower_big_route_avg_stdsqrt.csv&quot; using 1:2 every 50 with points linestyle 1 notitle, \
+     &quot;01_flower_big_route_avg_stdsqrt.csv&quot; using 1:2:3 every 50 with yerrorbars linestyle 1 title &quot;LSA GA&quot;, \
+     &quot;01_flower_big_route_avg_stdsqrt.csv&quot; using 1:4 with lines linestyle 2 notitle, \
+     &quot;01_flower_big_route_avg_stdsqrt.csv&quot; using 1:4 every 50 with points linestyle 2 notitle, \
+     &quot;01_flower_big_route_avg_stdsqrt.csv&quot; using 1:4:5 every 50 with yerrorbars linestyle 2 title &quot;LSA MA+PI&quot;, \
+     &quot;01_flower_big_route_avg_stdsqrt.csv&quot; using 1:6 with lines linestyle 3 notitle, \
+     &quot;01_flower_big_route_avg_stdsqrt.csv&quot; using 1:6 every 50 with points linestyle 3 notitle, \
+     &quot;01_flower_big_route_avg_stdsqrt.csv&quot; using 1:6:7 every 50 with yerrorbars linestyle 3 title &quot;LSA MA+PI+SI&quot;, \
+     &quot;01_flower_big_route_avg_stdsqrt.csv&quot; using 1:8 with lines linestyle 4 notitle, \
+     &quot;01_flower_big_route_avg_stdsqrt.csv&quot; using 1:8 every 50 with points linestyle 4 notitle, \
+     &quot;01_flower_big_route_avg_stdsqrt.csv&quot; using 1:8:9 every 50 with yerrorbars linestyle 4 title &quot;LSA MA+PI+SI+SVI&quot;
+</code></pre>
+<p>參考csv如此截圖：<br><img src="/2024/07/29/vscode-gnuplot/06.png"></p>
+<p>關於本gp檔、csv數據、字體，請洽傳承資料夾或上網搜尋其或衍伸字體(不確定的印象中在iOS系統是內建的)</p>
+
         </div>
     
 <!-- tags -->
+
+    <div class="post-meta">
+        標籤：
+        
+            <a href="/tags/CILAB/"> / CILAB</a>
+        
+            <a href="/tags/%E8%AB%96%E6%96%87/"> / 論文</a>
+        
+    </div>
 
 </div>
                 <div class="footer">
