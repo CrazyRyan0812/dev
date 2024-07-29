@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+    <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <meta name="robots" content="index, follow">
+  <!-- title -->
+  
+    
+  <title>如何處理Unifi VPN內網網段不同無法互聯的情況 - CrazyRyan&#39;s Development Note</title>
+    
+  
+  
+  <!-- open graph -->
+  
+  <meta property="og:description" content="Unifi預設會把VPN分到.2.X的網段，但是這樣.1.X會ping得到但連不上">
+  
+
+  
+  <meta property="og:image" content="/about/me.jpg">
+  
+
+  <meta name="description" content="Unifi預設會把VPN分到.2.X的網段，但是這樣.1.X會ping得到但連不上">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何處理Unifi VPN內網網段不同無法互聯的情況">
+<meta property="og:url" content="https://dev.crazyryan.xyz/2024/07/30/vpn-unifi-share/index.html">
+<meta property="og:site_name" content="CrazyRyan&#39;s Development Note">
+<meta property="og:description" content="Unifi預設會把VPN分到.2.X的網段，但是這樣.1.X會ping得到但連不上">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://dev.crazyryan.xyz/2024/07/30/vpn-unifi-share/03.png">
+<meta property="og:image" content="https://dev.crazyryan.xyz/01.jpg">
+<meta property="og:image" content="https://dev.crazyryan.xyz/02.jpg">
+<meta property="og:image" content="https://dev.crazyryan.xyz/03.png">
+<meta property="og:image" content="https://dev.crazyryan.xyz/04.png">
+<meta property="og:image" content="https://dev.crazyryan.xyz/05.png">
+<meta property="article:published_time" content="2024-07-29T21:16:10.000Z">
+<meta property="article:modified_time" content="2024-07-29T21:16:10.000Z">
+<meta property="article:author" content="CrazyRyan(員外)">
+<meta property="article:tag" content="CILAB">
+<meta property="article:tag" content="VPN">
+<meta property="article:tag" content="Unifi">
+<meta property="article:tag" content="網管">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dev.crazyryan.xyz/2024/07/30/vpn-unifi-share/03.png">
+  
+  <!-- canonical -->
+  
+  <link rel="canonical" href="https://dev.crazyryan.xyz/2024/07/30/vpn-unifi-share/">
+  
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="/img/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+  <!-- CSS -->
+  
+<link rel="stylesheet" href="/css/reset.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/markdown.css">
+
+  
+<link rel="stylesheet" href="/css/fonts.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a href="/" title="CrazyRyan"><img src="/img/logo.png" alt="CrazyRyan" aria-label="logo" height="56"></a>
+    <a class="logo" href="/">Development Note</a>
+    <!-- <div class="logo"><a href="/" title="CrazyRyan"><img src="/img/logo.png" alt="Len" aria-label="logo" height="20"></a></div> -->
+        <ul class="nav">
+            
+            <li><a href="/">Home</a></li>
+            
+            <li><a href="/about">About</a></li>
+            
+            <li><a href="/archives">Archives</a></li>
+            
+        </ul>
+
+
+    </a>
+</div>
+
+                
+                <div class="post-main">
+    
+        <div class="post-main-title">
+            如何處理Unifi VPN內網網段不同無法互聯的情況
+        </div>
+        <div class="post-meta">
+            2024-07-30 ｜ 
+            
+                <a href="/categories/%E7%B6%B2%E7%AE%A1%E7%9B%B8%E9%97%9C/"># 網管相關</a>
+            
+        </div>
+        <!-- 圓角分類 -->
+        <!-- <div class="tags"> -->
+            <!--  -->
+                <!-- <a href="/categories/%E7%B6%B2%E7%AE%A1%E7%9B%B8%E9%97%9C/">網管相關</a> -->
+            <!--  -->
+        <!-- </div> -->
+        <div class="post-md">
+            <p>首先，先假設一個情境：</p>
+<p>今天LAB架設了一部Windows電腦，想要分享裡面的其中一個資料夾給同網域內的所有電腦，當作是一個公用資料夾</p>
+<p>身為網管的你，建立好資料夾後，設定好共享權限為everyone，並開通了網路上的芳鄰的共用檔案和印表機功能</p>
+<p>一切看似完美，實驗室的其中幾台電腦也可以連線，但是人在實驗室外享用VPN回來的夥伴卻沒辦法連線</p>
+<p>發生了甚麼事？？？</p>
+<img src="./03.png" alt="Hidden Image" style="display:none;">
+
+<p><img src="/./01.jpg"></p>
+<h2 id="先講結論，防火牆在搞，而且有兩道XD"><a href="#先講結論，防火牆在搞，而且有兩道XD" class="headerlink" title="先講結論，防火牆在搞，而且有兩道XD"></a>先講結論，防火牆在搞，而且有兩道XD</h2><p>Unifi本身的防火牆規則，跟主機端本身的防火牆規則，兩條都需要檢查並設定。</p>
+<div class="message-box success">
+核心概念是：允許192.168.2.X的VPN用戶訪問192.168.1.0/24網段
+</div>
+
+<p>要達成以上的分享目標，我們會假定以下狀況都設定正確：</p>
+<ul>
+<li>資料夾有確實分享，並且權限有給everyone或大家都有帳號密碼</li>
+<li>文件主機的電腦有打開網路上的芳鄰設定，或者，如下圖，windows 防火牆，點 允許程式或功能通過windows防火牆，將 檔案及印表機共用 均開啟通過<br><img src="/./02.jpg"></li>
+<li>NetBIOS有啟用(預設是啟用的)</li>
+</ul>
+<h2 id="Unifi-防火牆規則設定"><a href="#Unifi-防火牆規則設定" class="headerlink" title="Unifi 防火牆規則設定"></a>Unifi 防火牆規則設定</h2><div class="message-box danger">
+請自行判讀你現在被分配到的VPN網段，跟確認好目標主機的網段
+</div>
+
+<p>Settings -&gt; Security -&gt; Traffic&amp;Firewll rules -&gt; Advanced -&gt; Create Entry，新增相對應網段資訊，過程中記得要按Add(UI設計有夠不友善…)</p>
+<p><img src="/./03.png"></p>
+<p>這樣就設定完成囉</p>
+<h2 id="Windows：具有進階安全性的Windows防火牆"><a href="#Windows：具有進階安全性的Windows防火牆" class="headerlink" title="Windows：具有進階安全性的Windows防火牆"></a>Windows：具有進階安全性的Windows防火牆</h2><p>可以直接用搜尋找到這個程式。</p>
+<p>輸入規則 -&gt; 新增規則 -&gt; 自訂 -&gt; 所有程式 -&gt;　任一</p>
+<p><img src="/./04.png"></p>
+<p>此時這個地方下面的遠端IP位置要輸入VPN端的網段地址，如下圖所示</p>
+<p><img src="/./05.png"></p>
+<p>-&gt; 允許連線 -&gt; 設定檔 -&gt; 名稱</p>
+<p>就設定完成囉，也可以考慮新增.1.X網段來避免同實驗室下無法連入</p>
+<h2 id="補充小知識，為甚麼ping得到？"><a href="#補充小知識，為甚麼ping得到？" class="headerlink" title="補充小知識，為甚麼ping得到？"></a>補充小知識，為甚麼ping得到？</h2><p>因為他走的是 ICMP 的流量，可以先在被測試端電腦輸入以下指令來測試</p>
+<pre><code class="sh">netsh advfirewall firewall add rule name=&quot;Allow ICMPv4-In&quot; protocol=icmpv4:8,any dir=in action=allow
+</code></pre>
+
+        </div>
+    
+<!-- tags -->
+
+    <div class="post-meta">
+        標籤：
+        
+            <a href="/tags/CILAB/"> / CILAB</a>
+        
+            <a href="/tags/VPN/"> / VPN</a>
+        
+            <a href="/tags/Unifi/"> / Unifi</a>
+        
+            <a href="/tags/%E7%B6%B2%E7%AE%A1/"> / 網管</a>
+        
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © <script>document.write(new Date().getFullYear())</script> CrazyRyan&#39;s Development Note</span>
+    <span>Powered by <a target="_blank" rel="noopener" href="https://github.com/CrazyRyan0812/">CrazyRyan 員外</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+
+
+<script src="/js/highlight.min.js"></script>
+
+
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+    </body>
+</html>
