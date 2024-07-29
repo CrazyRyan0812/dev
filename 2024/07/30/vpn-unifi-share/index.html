@@ -28,11 +28,11 @@
 <meta property="og:description" content="Unifi預設會把VPN分到.2.X的網段，但是這樣.1.X會ping得到但連不上">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:image" content="https://dev.crazyryan.xyz/2024/07/30/vpn-unifi-share/03.png">
-<meta property="og:image" content="https://dev.crazyryan.xyz/01.jpg">
-<meta property="og:image" content="https://dev.crazyryan.xyz/02.jpg">
-<meta property="og:image" content="https://dev.crazyryan.xyz/03.png">
-<meta property="og:image" content="https://dev.crazyryan.xyz/04.png">
-<meta property="og:image" content="https://dev.crazyryan.xyz/05.png">
+<meta property="og:image" content="https://dev.crazyryan.xyz/2024/07/30/vpn-unifi-share/01.jpg">
+<meta property="og:image" content="https://dev.crazyryan.xyz/2024/07/30/vpn-unifi-share/02.jpg">
+<meta property="og:image" content="https://dev.crazyryan.xyz/2024/07/30/vpn-unifi-share/03.png">
+<meta property="og:image" content="https://dev.crazyryan.xyz/2024/07/30/vpn-unifi-share/04.png">
+<meta property="og:image" content="https://dev.crazyryan.xyz/2024/07/30/vpn-unifi-share/05.png">
 <meta property="article:published_time" content="2024-07-29T21:16:10.000Z">
 <meta property="article:modified_time" content="2024-07-29T21:16:10.000Z">
 <meta property="article:author" content="CrazyRyan(員外)">
@@ -113,7 +113,7 @@
 <p>發生了甚麼事？？？</p>
 <img src="./03.png" alt="Hidden Image" style="display:none;">
 
-<p><img src="/./01.jpg"></p>
+<p><img src="/2024/07/30/vpn-unifi-share/01.jpg"></p>
 <h2 id="先講結論，防火牆在搞，而且有兩道XD"><a href="#先講結論，防火牆在搞，而且有兩道XD" class="headerlink" title="先講結論，防火牆在搞，而且有兩道XD"></a>先講結論，防火牆在搞，而且有兩道XD</h2><p>Unifi本身的防火牆規則，跟主機端本身的防火牆規則，兩條都需要檢查並設定。</p>
 <div class="message-box success">
 核心概念是：允許192.168.2.X的VPN用戶訪問192.168.1.0/24網段
@@ -122,7 +122,7 @@
 <p>要達成以上的分享目標，我們會假定以下狀況都設定正確：</p>
 <ul>
 <li>資料夾有確實分享，並且權限有給everyone或大家都有帳號密碼</li>
-<li>文件主機的電腦有打開網路上的芳鄰設定，或者，如下圖，windows 防火牆，點 允許程式或功能通過windows防火牆，將 檔案及印表機共用 均開啟通過<br><img src="/./02.jpg"></li>
+<li>文件主機的電腦有打開網路上的芳鄰設定，或者，如下圖，windows 防火牆，點 允許程式或功能通過windows防火牆，將 檔案及印表機共用 均開啟通過<br><img src="/2024/07/30/vpn-unifi-share/02.jpg"></li>
 <li>NetBIOS有啟用(預設是啟用的)</li>
 </ul>
 <h2 id="Unifi-防火牆規則設定"><a href="#Unifi-防火牆規則設定" class="headerlink" title="Unifi 防火牆規則設定"></a>Unifi 防火牆規則設定</h2><div class="message-box danger">
@@ -130,13 +130,13 @@
 </div>
 
 <p>Settings -&gt; Security -&gt; Traffic&amp;Firewll rules -&gt; Advanced -&gt; Create Entry，新增相對應網段資訊，過程中記得要按Add(UI設計有夠不友善…)</p>
-<p><img src="/./03.png"></p>
+<p><img src="/2024/07/30/vpn-unifi-share/03.png"></p>
 <p>這樣就設定完成囉</p>
 <h2 id="Windows：具有進階安全性的Windows防火牆"><a href="#Windows：具有進階安全性的Windows防火牆" class="headerlink" title="Windows：具有進階安全性的Windows防火牆"></a>Windows：具有進階安全性的Windows防火牆</h2><p>可以直接用搜尋找到這個程式。</p>
 <p>輸入規則 -&gt; 新增規則 -&gt; 自訂 -&gt; 所有程式 -&gt;　任一</p>
-<p><img src="/./04.png"></p>
+<p><img src="/2024/07/30/vpn-unifi-share/04.png"></p>
 <p>此時這個地方下面的遠端IP位置要輸入VPN端的網段地址，如下圖所示</p>
-<p><img src="/./05.png"></p>
+<p><img src="/2024/07/30/vpn-unifi-share/05.png"></p>
 <p>-&gt; 允許連線 -&gt; 設定檔 -&gt; 名稱</p>
 <p>就設定完成囉，也可以考慮新增.1.X網段來避免同實驗室下無法連入</p>
 <h2 id="補充小知識，為甚麼ping得到？"><a href="#補充小知識，為甚麼ping得到？" class="headerlink" title="補充小知識，為甚麼ping得到？"></a>補充小知識，為甚麼ping得到？</h2><p>因為他走的是 ICMP 的流量，可以先在被測試端電腦輸入以下指令來測試</p>
