@@ -127,15 +127,16 @@
 <p><img src="/2024/07/29/vscode-gnuplot/04.png"></p>
 <p>就安裝完成囉</p>
 <h3 id="簡易Gnuplot教學"><a href="#簡易Gnuplot教學" class="headerlink" title="簡易Gnuplot教學"></a>簡易Gnuplot教學</h3><p>基本上存Gnuplot的部分，副檔名可以是 .gp&#x2F;.dem 之類的，但他們基本上本質都只是txt而已</p>
-<p>這裡提供一組 .gp 的內容範例，只要按<code>ctrl+shift+v</code>即可即時預覽，如下圖：</p>
+<p>這裡提供一組 .gp 的內容範例，只要按<code>ctrl+alt+v</code>即可即時預覽，如下圖：</p>
 <p><img src="/2024/07/29/vscode-gnuplot/05.png"></p>
 <p>雖然在即時預覽時比例很怪，但是在輸出eps&#x2F;png的時候會是正常的，以下提供幾個比較難理解的 code 解釋：</p>
 <ul>
-<li>第06-10行是輸出eps的code，解除註解的話，會即時輸出eps出來</li>
-<li>第12-16行是輸出png的code，解除註解的話，會即時輸出png出來</li>
-<li>第18-21行是設定 x y 軸的數值範圍跟刻度範圍，要注意要多加一個小刻度以避免最上面沒輸出到</li>
-<li>第23-26行是一組點+線的設定值，<a target="_blank" rel="noopener" href="https://jerkwin.github.io/2014/04/06/gnuplot%E9%A2%9C%E8%89%B2%E8%AE%BE%E7%BD%AE/">顏色可以參考這篇</a>，<a target="_blank" rel="noopener" href="https://wiki.slank.dev/misc/gnuplot.html">點線形式可以參考這篇</a>，其餘以此類推</li>
-<li>第56-58行是輸出一組完整線的部分，本code的做法是會將一條線分成3條不同的線顯示，其餘以此類推<ul>
+<li>要注意：輸出eps&#x2F;png只能擇一輸出註解，否則會輸出空白檔案</li>
+<li>第06-11行是輸出eps的code，解除註解的話，會即時輸出eps出來</li>
+<li>第13-17行是輸出png的code，解除註解的話，會即時輸出png出來</li>
+<li>第19-22行是設定 x y 軸的數值範圍跟刻度範圍，要注意要多加一個小刻度以避免最左上角沒輸出到</li>
+<li>第24-27行是一組點+線的設定值，<a target="_blank" rel="noopener" href="https://jerkwin.github.io/2014/04/06/gnuplot%E9%A2%9C%E8%89%B2%E8%AE%BE%E7%BD%AE/">顏色可以參考這篇</a>，<a target="_blank" rel="noopener" href="https://wiki.slank.dev/misc/gnuplot.html">點線形式可以參考這篇</a>，其餘以此類推</li>
+<li>第57-59行是輸出一組完整線的部分，本code的做法是會將一條線分成3條不同的線顯示，其餘以此類推<ul>
 <li>抓第1欄當作x值，抓第2欄當作y值，線的格式，顯示線-格式1，不顯示legend</li>
 <li>抓第1欄當作x值，抓第2欄當作y值，點的格式，每50個數據顯示一個點-格式1，不顯示legend</li>
 <li>抓第1欄當作x值，抓第2欄當作y值，抓第3欄當作dy值，error bar的格式，每50個數據顯示一個bar-格式1，顯示legend</li>
@@ -147,11 +148,12 @@
 set encoding utf8
 set datafile separator &#39;,&#39;
 
-# set terminal postscript eps color enhanced font &quot;Helvetica, 30&quot; size 10in, 7.5in
+# set terminal postscript eps color enhanced font &quot;Helvetica, 40&quot; size 10in, 7.5in
 # set output &#39;01_flower_big_route_avg_four_stdsqrt.eps&#39;
-# set xlabel &quot;Generation&quot; font &quot;Helvetica, 40&quot;
-# set ylabel &quot;Route length&quot; font &quot;Helvetica, 40&quot;
-# set key font &quot;Helvetica, 40&quot;
+# set xlabel &quot;Generation&quot; font &quot;Helvetica, 50&quot;
+# set ylabel &quot;Route length&quot; font &quot;Helvetica, 50&quot;
+# set xtics font &quot;Helvetica, 40&quot;
+# set ytics font &quot;Helvetica, 40&quot;
 
 # set terminal pngcairo enhanced font &#39;Helvetica, 20&#39; size 1000, 750
 # set output &#39;01_flower_big_route_avg_four_stdsqrt.png&#39;
