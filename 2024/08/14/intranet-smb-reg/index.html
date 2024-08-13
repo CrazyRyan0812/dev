@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <meta name="robots" content="index, follow">
+  <!-- title -->
+  
+    
+  <title>如何處理區網內無法連線的問題 - CrazyRyan&#39;s Development Note</title>
+    
+  
+  
+  <!-- open graph -->
+  
+  <meta property="og:description" content="區網(網路內的芳鄰)會連線不到特定主機，明明權限已經是everyone了">
+  
+
+  
+  <meta property="og:image" content="/./01.jpg">
+  
+
+  <meta name="description" content="區網(網路內的芳鄰)會連線不到特定主機，明明權限已經是everyone了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何處理區網內無法連線的問題">
+<meta property="og:url" content="https://dev.crazyryan.xyz/2024/08/14/intranet-smb-reg/index.html">
+<meta property="og:site_name" content="CrazyRyan&#39;s Development Note">
+<meta property="og:description" content="區網(網路內的芳鄰)會連線不到特定主機，明明權限已經是everyone了">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://dev.crazyryan.xyz/2023/03/21/google-site-subdomain-nthu/">
+<meta property="og:image" content="https://dev.crazyryan.xyz/2023/03/21/google-site-subdomain-nthu/">
+<meta property="article:published_time" content="2024-08-13T20:30:55.000Z">
+<meta property="article:modified_time" content="2024-08-13T20:30:55.000Z">
+<meta property="article:author" content="CrazyRyan(員外)">
+<meta property="article:tag" content="CILAB">
+<meta property="article:tag" content="網管">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dev.crazyryan.xyz/2023/03/21/google-site-subdomain-nthu/">
+  
+  <!-- canonical -->
+  
+  <link rel="canonical" href="https://dev.crazyryan.xyz/2024/08/14/intranet-smb-reg/">
+  
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="/img/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+  <!-- CSS -->
+  
+<link rel="stylesheet" href="/css/reset.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/markdown.css">
+
+  
+<link rel="stylesheet" href="/css/fonts.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a href="/" title="CrazyRyan"><img src="/img/logo.png" alt="CrazyRyan" aria-label="logo" height="56"></a>
+    <a class="logo" href="/">Development Note</a>
+    <!-- <div class="logo"><a href="/" title="CrazyRyan"><img src="/img/logo.png" alt="Len" aria-label="logo" height="20"></a></div> -->
+        <ul class="nav">
+            
+            <li><a href="/">Home</a></li>
+            
+            <li><a href="/about">About</a></li>
+            
+            <li><a href="/archives">Archives</a></li>
+            
+        </ul>
+
+
+    </a>
+</div>
+
+                
+                <div class="post-main">
+    
+        <div class="post-main-title">
+            如何處理區網內無法連線的問題
+        </div>
+        <div class="post-meta">
+            2024-08-14 ｜ 
+            
+                <a href="/categories/%E7%B6%B2%E7%AE%A1%E7%9B%B8%E9%97%9C/"># 網管相關</a>
+            
+        </div>
+        <!-- 圓角分類 -->
+        <!-- <div class="tags"> -->
+            <!--  -->
+                <!-- <a href="/categories/%E7%B6%B2%E7%AE%A1%E7%9B%B8%E9%97%9C/">網管相關</a> -->
+            <!--  -->
+        <!-- </div> -->
+        <div class="post-md">
+            <p>書接<a href="https://dev.crazyryan.xyz/2024/07/30/vpn-unifi-share/">上回文章</a>，如果今天確認了：</p>
+<ol>
+<li>Host電腦的共享權限設定無誤，甚至很極端的設定了everyone的權限</li>
+<li>內網網段彼此是互通的</li>
+<li>沒有防火牆再搞</li>
+</ol>
+<p>再新增網路磁碟機連線的時候，卻還是出現如下圖的錯誤：</p>
+<p><img src="/2023/03/21/google-site-subdomain-nthu/"></p>
+<p><img src="/2023/03/21/google-site-subdomain-nthu/"></p>
+<p>有一定的機會是windows的SMB的奇妙安全機制再搞(本文暫時不討論超多不同的版本，甚至對應到不同的windows有不同的規則)，解決方法如下：</p>
+<p>在host端跟client端都下載這個<a href="./fix.reg">修正reg檔(可用編輯模式去確認沒有亂搞)</a></p>
+<p>或是手動打開regedit(登陸編輯程式)，走以下路徑去新增這個值</p>
+<pre><code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanWorkstation\Parameters
+
+&quot;AllowInsecureGuestAuth&quot;=dword:00000001
+</code></pre>
+<div class="message-box danger">
+這個方法其實很偷吃步，強烈建議只用在完全封閉且單一權限的區域網路，如果是其他的狀況很不建議這樣用，因為從文字上你也看得出來發生甚麼事XD
+</div>
+        </div>
+    
+<!-- tags -->
+
+    <div class="post-meta">
+        標籤：
+        
+            <a href="/tags/CILAB/"> / CILAB</a>
+        
+            <a href="/tags/%E7%B6%B2%E7%AE%A1/"> / 網管</a>
+        
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © <script>document.write(new Date().getFullYear())</script> CrazyRyan&#39;s Development Note</span>
+    <span>Powered by <a target="_blank" rel="noopener" href="https://github.com/CrazyRyan0812/">CrazyRyan 員外</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+
+
+<script src="/js/highlight.min.js"></script>
+
+
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+    </body>
+</html>
